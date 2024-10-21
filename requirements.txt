@@ -1,0 +1,11 @@
+Create a virtual repository:
+copy this command : 
+python -m venv myenv
+make sure django is installed 
+copy this command :
+pip install django
+
+hosted at localhost : http://127.0.0.1:8000/
+make sure to use only :
+USER NAME : demo_user
+PASSWORD : your_password_here
