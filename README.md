@@ -16,3 +16,4 @@ SplitMoney is a web application built with Django that helps users manage their 
 ## Installation
 
 1. Clone the repository:
+2. make sure to read requirements.txt
