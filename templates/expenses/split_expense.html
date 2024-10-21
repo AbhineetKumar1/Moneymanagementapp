@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Split Expense</h2>
+<form method="post">
+
+<div class="container mt-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'expenses' %}">Expenses</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Split Expense</li>
+    </ol>
+  </nav>
+
+  <div class="card">
+    <div class="card-body">
+      <h2>Split Expense: {{ expense.description }}</h2>
+      <p>Total Amount: {{ expense.amount }} {{ currency }}</p>
+
+      <form method="post">
+        {% csrf_token %}
+        {% include 'partials/_messages.html' %}
+
+        <div class="form-group">
+          <label for="split_with">Split with (comma-separated usernames):</label>
+          <input type="text" class="form-control" id="split_with" name="split_with" required>
+        </div>
+
+        <div class="form-group">
+          <label>Split method:</label>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="split_method" id="equal" value="equal" checked>
+            <label class="form-check-label" for="equal">
+              Equal split
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="split_method" id="custom" value="custom">
+            <label class="form-check-label" for="custom">
+              Custom split
+            </label>
+          </div>
+        </div>
+
+        <div id="custom_split_inputs" style="display: none;">
+          <p>Enter the amount for each person (including yourself):</p>
+          <div class="form-group">
+            <label for="your_amount">Your amount:</label>
+            <input type="number" step="0.01" class="form-control" id="your_amount" name="your_amount">
+          </div>
+          <div id="other_amounts"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Split Expense</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const splitMethod = document.getElementsByName('split_method');
+    const customSplitInputs = document.getElementById('custom_split_inputs');
+    const splitWithInput = document.getElementById('split_with');
+    const otherAmounts = document.getElementById('other_amounts');
+
+    function toggleCustomSplitInputs() {
+      customSplitInputs.style.display = document.getElementById('custom').checked ? 'block' : 'none';
+    }
+
+    splitMethod.forEach(function(radio) {
+      radio.addEventListener('change', toggleCustomSplitInputs);
+    });
+
+    splitWithInput.addEventListener('input', function() {
+      const users = this.value.split(',').map(user => user.trim()).filter(user => user);
+      otherAmounts.innerHTML = '';
+      users.forEach(function(user) {
+        otherAmounts.innerHTML += `
+          <div class="form-group">
+            <label for="${user}_amount">${user}'s amount:</label>
+            <input type="number" step="0.01" class="form-control" id="${user}_amount" name="${user}_amount">
+          </div>
+        `;
+      });
+    });
+  });
+</script>
+
+{% endblock %}
