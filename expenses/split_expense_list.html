@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Split Expenses</h2>
+<ul>
+    {% for expense in expenses %}
+    <li>
+        <a href="{% url 'split-expense' expense.id %}">
+            {{ expense.amount }} - {{ expense.category }} - {{ expense.description }}
+        </a>
+    </li>
+    {% empty %}
+    <li>No expenses to split.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
